@@ -2,7 +2,7 @@ class Circle:
     def __init__(self, radius):
         self.radius = radius
 
-    def circumference(self):
+    def perimeter(self):
         pi = 3.14
         return 2*(pi)*self.radius
 
