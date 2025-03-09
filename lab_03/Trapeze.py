@@ -1,15 +1,21 @@
 class Trapeze:
     def __init__(self, base1, base2, side1, side2):
-        assert(base1 > 0 
-            and base2 > 0 
-            and side1 > 0 
-            and side2 > 0 
-            and (base1**2 + base2**2 + side1**2) > (side2**2)/3
-            and (base1**2 + base2**2 + side2**2) > (side1**2)/3
-            and (base2**2 + side1**2 + side2**2) > (base1**2)/3
-            and (base1**2 + side2**2 + side2**2) > (base2**2)/3
-            and (abs(base1 - base2) < side1+side2)
-            ),"Неможливо утворити трапецію з такими сторонами"
+        assert (
+            base1 > 0
+            and base2 > 0
+            and side1 > 0
+            and side2 > 0
+            and (
+                (base1 == base2 and side1 == side2)
+                or (
+                    base1 != base2
+                    and 4 * side1**2 * (abs(base1 - base2)) ** 2
+                    >= ((abs(base1-base2))**2 + side1**2 - side2**2) ** 2
+                    and 4 * side2**2 * (abs(base1-base2))**2
+                    >= ((abs(base1-base2))**2 - side1**2 + side2**2) ** 2
+                )
+            )
+        ), "Неможливо утворити трапецію з такими сторонами"
         self.base1 = base1
         self.base2 = base2
         self.side1 = side1
