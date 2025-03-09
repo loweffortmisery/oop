@@ -6,7 +6,7 @@ class Triangle:
         self.c = c
     
     def __str__(self):
-        return f"Triangle: {self.__position, self.__vertex1, self.__vertex2}"
+        return f"Triangle: {self.a, self.b, self.c}"
  
     def perimeter(self):
         return self.a + self.b + self.c

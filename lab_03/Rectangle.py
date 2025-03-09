@@ -7,8 +7,9 @@ class Rectangle:
 
     def perimeter(self):
         return 2 * (self.a + self.b)
+
     def area(self):
         return self.a * self.b
 
     def __str__(self):
-        return f"Прямокутник з сторонами {self.a} і {self.b}"
+        return f"Rectangle: {self.a} {self.b}"
