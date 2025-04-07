@@ -125,7 +125,10 @@ class Rational():
         return inv * other
     
     def __str__(self):
-        return f"{self.n}/{'(' if self.d < 0 else ''}{self.d}{')' if self.d < 0 else ''}"
+        if(self.d == 1):
+            return f"{self.n}"
+        else:
+            return f"{self.n}/{'(' if self.d < 0 else ''}{self.d}{')' if self.d < 0 else ''}"
 
     def __repr__(self):
         return str(self)
