@@ -68,19 +68,31 @@ class Rational():
         self.d = self.d//div
     
     def __mul__(self, other):
-        if isinstance(other, Rational):
-            return Rational(self.n * other.n, self.d * other.d)
-        elif isinstance(other, int):
-            return Rational(self.n * other, self.d)
-            
+        try:
+            rat = Rational(other)
+            return Rational(self.n * rat.n, self.d * rat.d)
+        except (ValueError,ZeroDivisionError) as e:
+            raise e
+
+    #   if isinstance(other, Rational):
+    #       return Rational(self.n * other.n, self.d * other.d)
+    #   elif isinstance(other, int):
+    #       return Rational(self.n * other, self.d)
+    #      
     def __rmul__(self,other):
         return self * other
 
     def __add__(self, other):
-        if isinstance(other, Rational):
-            return Rational(self.n * other.d + other.n * self.d, self.d * other.d)
-        elif isinstance(other, int):
-            return Rational(self.n + other * self.d, self.d)
+        try:
+            rat = Rational(other)
+            return Rational(self.n * rat.d + rat.n * self.d, self.d * rat.d)
+        except (ValueError, ZeroDivisionError) as e:
+            raise e
+
+        #     if isinstance(other, Rational):
+   #         return Rational(self.n * other.d + other.n * self.d, self.d * other.d)
+   #     elif isinstance(other, int):
+   #         return Rational(self.n + other * self.d, self.d)
     def __radd__(self,other):
         return self + other
 
@@ -118,53 +130,53 @@ class Rational():
     def __repr__(self):
         return str(self)
 
-def solve(filename):
-    with open(filename, 'r') as f:
-        for line in f:
-            els = line.strip().split()
-            if not els:
-                continue
-            try:
-                Rationals = []
-                operations = []
-                i = 0
-                while i < (len(els)):
-#                    print(el)
-                    if els[i] in {'+','-'}:
-                        operations.append(els[i])
-                    elif els[i] == '*':
-                        Rationals[-1] *= Rational(els[i+1])
+def solve(filename, out):
+    with open(out, 'a') as out:
+        print('\n\n', filename, ' :\n', file = out)
+        with open(filename, 'r') as f:
+            for line in f:
+                els = line.strip().split()
+                if not els:
+                    continue
+                try:
+                    Rationals = []
+                    operations = []
+                    i = 0
+                    while i < (len(els)):
+    #                    print(el)
+                        if els[i] in {'+','-'}:
+                            operations.append(els[i])
+                        elif els[i] == '*':
+                            Rationals[-1] *= Rational(els[i+1])
+                            i += 1
+                        elif els[i] == '/':
+                            Rationals[-1] /= Rational(els[i+1])
+                            i+=1
+                        else:
+                            Rationals.append(Rational(els[i]))
                         i += 1
-                    elif els[i] == '/':
-                        Rationals[-1] /= Rational(els[i+1])
-                        i+=1
+                except (ValueError, ZeroDivisionError):
+                    raise ValueError("Некоректні дані")
+    #            print(Rationals)
+    #            print (operations)
+                res = Rationals[0]
+                i = 0
+                for operation in operations:
+                    i+=1
+                    if operation == '+':
+                        res += Rationals[i]
+                    elif operation == '-':
+                        res -= Rationals[i]
+                    elif operation == '*':
+                        res *= Rationals[i]
+                    elif operation == '/':
+                        res /= Rationals[i]
                     else:
-                        Rationals.append(Rational(els[i]))
-                    i += 1
-            except (ValueError, ZeroDivisionError):
-                raise ValueError("Некоректні дані")
-#            print(Rationals)
-#            print (operations)
-            res = Rationals[0]
-            i = 0
-            for operation in operations:
-                i+=1
-                if operation == '+':
-                    res += Rationals[i]
-                elif operation == '-':
-                    res -= Rationals[i]
-                elif operation == '*':
-                    res *= Rationals[i]
-                elif operation == '/':
-                    res /= Rationals[i]
-                else:
-                    raise AssertionError
+                        raise AssertionError
 
-            print(res)
+                print(res, '\n', file = out)
 
 if __name__ == '__main__':
-    r1 = Rational(1,2)
-    print(5 + r1)
-    filenames = ['input01.txt']
+    filenames = ['Rational_input/input01.txt']
     for filename in filenames:
-        solve(filename)
+        solve(filename, 'Rational_out.txt')
