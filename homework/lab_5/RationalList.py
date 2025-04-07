@@ -1,4 +1,33 @@
 from Rational import Rational
+
+class RationalList_iterator:
+    def __init__(self, collection: list):
+        self.__collection = self.__custom_sort(collection)
+        self.__current = 0
+    @staticmethod
+    def __custom_sort(rat_list):
+        result = list(rat_list)
+        _sorted = False
+        while not _sorted:
+            _sorted = True
+            for i in range(1, len(result)):
+                rat_1 = result[i-1]
+                rat_2 = result[i]
+                if ((rat_1.d < rat_2.d) or 
+                    (rat_1.d == rat_2.d and rat_1.n < rat_2.n)):
+                        result[i-1] = rat_2
+                        result[i] = rat_1
+                        _sorted = False
+        return result
+
+    def __next__(self):
+        try:
+            val = self.__collection[self.__current]
+            self.__current += 1
+            return val
+        except IndexError:
+            raise StopIteration
+
 class RationalList:
     def __init__(self, *args):
         self.__collection = []
@@ -59,7 +88,9 @@ class RationalList:
     
     def __str__(self):
         return str(self.__collection)
-
+    
+    def __iter__(self):
+        return RationalList_iterator(self.__collection)
 
 
 def find_sums(filename,out):
@@ -76,8 +107,30 @@ def find_sums(filename,out):
                     raise ValueError("Некоректні дані")
                 print(sum(rat_list), "\n", file = out)
 
+
+
+def disp_iterated(filename,out):
+    with open(out, 'a') as out:
+        print("\n\n",filename, " :\n", file = out)
+        with open(filename, 'r') as f:
+            for line in f:
+                els = line.strip().split()
+                if not els:
+                    continue
+                try:
+                    rat_list = RationalList(*els)
+                except (ValueError, ZeroDivisionError):
+                    raise ValueError("Некоректні дані")
+                print(*rat_list, "\n", file = out)
+
+
+
 if __name__ == '__main__':
     filenames = ['RationalList_input/input01.txt', 'RationalList_input/input02.txt', 'RationalList_input/input03.txt']
+   # for filename in filenames:
+   #     find_sums(filename,'RationalList_out.txt')
     for filename in filenames:
-        find_sums(filename,'RationalList_out.txt')
+        disp_iterated(filename,'RationalList_iterator_out.txt')
+
+
 
