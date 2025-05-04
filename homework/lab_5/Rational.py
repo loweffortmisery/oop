@@ -1,11 +1,13 @@
-
+from RationalError import RationalError, RationalValueError
 
 
 
 
 class Rational():
     def __init__(self, *args):
-        if len(args) == 2 and type(args[0]) == int and type(args[1]) == int and args[1] != 0:
+        if len(args) == 2 and type(args[0]) == int and type(args[1]) == int:
+            if args[1] == 0:
+                raise RationalError()
             self.n = args[0]
             self.d = args[1]
         elif len(args) == 1:
@@ -24,14 +26,14 @@ class Rational():
                         self.n = rat.n
                         self.d = rat.d
                         del rat
-                    except ValueError:
-                        raise ValueError("Некоректні дані")
+                    except (RationalValueError, RationalError) as e:
+                        raise e
                 else:
-                    raise ValueError("Некоректні дані")
+                    raise RationalValueError()
             else:
-                raise ValueError("Некоректні дані")
+                raise RationalValueError()
         else:
-            raise ValueError("Некоректні дані")
+            raise RationalValueError()
         
         self.reduce()
 
@@ -47,7 +49,7 @@ class Rational():
             self.n = value
         elif key == "d":
             if value == 0:
-                raise ValueError("Не можна ділити на 0")
+                raise RationalError()
             self.d = value
         else:
             raise KeyError
@@ -71,7 +73,7 @@ class Rational():
         try:
             rat = Rational(other)
             return Rational(self.n * rat.n, self.d * rat.d)
-        except (ValueError,ZeroDivisionError) as e:
+        except (RationalValueError, RationalError) as e:
             raise e
 
     #   if isinstance(other, Rational):
@@ -86,7 +88,7 @@ class Rational():
         try:
             rat = Rational(other)
             return Rational(self.n * rat.d + rat.n * self.d, self.d * rat.d)
-        except (ValueError, ZeroDivisionError) as e:
+        except (RationalValueError, RationalError) as e:
             raise e
 
         #     if isinstance(other, Rational):
@@ -114,13 +116,13 @@ class Rational():
     def __truediv__(self,other):
         divisor = Rational(other)
         if divisor.n == 0:
-            raise ZeroDivisionError
+            raise RationalError()
         inv = Rational(divisor.d, divisor.n)
         return self * inv
 
     def __rtruediv__(self,other):
         if self.n == 0:
-            raise ZeroDivisionError
+            raise RationalError()
         inv = Rational(self.d, self.n)
         return inv * other
     
@@ -158,8 +160,8 @@ def solve(filename, out):
                         else:
                             Rationals.append(Rational(els[i]))
                         i += 1
-                except (ValueError, ZeroDivisionError):
-                    raise ValueError("Некоректні дані")
+                except (RationalValueError, RationalError) as e:
+                    raise e
     #            print(Rationals)
     #            print (operations)
                 res = Rationals[0]
@@ -175,11 +177,13 @@ def solve(filename, out):
                     elif operation == '/':
                         res /= Rationals[i]
                     else:
-                        raise AssertionError
+                        raise RationalValueError(message="Такої операції немає")
 
                 print(res, '\n', file = out)
 
 if __name__ == '__main__':
+
+    r = Rational(2,0)
     filenames = ['Rational_input/input01.txt']
     for filename in filenames:
         solve(filename, 'Rational_out.txt')
